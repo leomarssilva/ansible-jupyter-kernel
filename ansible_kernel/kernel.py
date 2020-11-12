@@ -289,7 +289,7 @@ class AnsibleKernel(Kernel):
     def rewrite_ports(self):
 
         with open(self.playbook_file, 'r') as f:
-            playbook = yaml.load(f.read(), Loader=yaml.FullLoader)
+            playbook = yaml.safe_load(f.read())
         playbook[0]['tasks'][0]['pause_for_kernel']['port'] = self.helper.pause_socket_port
         with open(self.playbook_file, 'w') as f:
             f.write(yaml.safe_dump(playbook, default_flow_style=False))
@@ -630,14 +630,14 @@ class AnsibleKernel(Kernel):
         if self.is_ansible_alive():
             self.do_shutdown(False)
         self.start_helper()
-        code_data = yaml.load(code, Loader=yaml.FullLoader)
+        code_data = yaml.safe_load(code)
         logger.debug('code_data %r', code_data)
         logger.debug('code_data type: %s', type(code_data))
         self.current_play = code
 
         playbook = []
 
-        current_play = yaml.load(self.current_play, Loader=yaml.FullLoader)
+        current_play = yaml.safe_load(self.current_play)
         if current_play is None:
             current_play = {}
         playbook.append(current_play)
@@ -756,7 +756,7 @@ class AnsibleKernel(Kernel):
         self.registered_variable = None
         self.current_task = code
         try:
-            code_data = yaml.load(code, Loader=yaml.FullLoader)
+            code_data = yaml.safe_load(code)
         except Exception:
             code_data = code
         logger.debug('code_data %s', code_data)
@@ -788,7 +788,7 @@ class AnsibleKernel(Kernel):
 
         if not isinstance(code_data, dict):
             try:
-                code_data = yaml.load(code, Loader=yaml.FullLoader)
+                code_data = yaml.safe_load(code)
                 tb = []
             except Exception:
                 tb = traceback.format_exc(1).splitlines()
@@ -813,7 +813,7 @@ class AnsibleKernel(Kernel):
 
             tasks = []
 
-            current_task_data = yaml.load(self.current_task, Loader=yaml.FullLoader)
+            current_task_data = yaml.safe_load(self.current_task)
             current_task_data['ignore_errors'] = True
             tasks.append(current_task_data)
             tasks.append({'pause_for_kernel': {'host': '127.0.0.1',
@@ -968,10 +968,10 @@ class AnsibleKernel(Kernel):
         found_module = False
         code_data = None
         try:
-            code_data = yaml.load(code, Loader=yaml.FullLoader)
+            code_data = yaml.safe_load(code)
         except Exception:
             try:
-                code_data = yaml.load(code + ":", Loader=yaml.FullLoader)
+                code_data = yaml.safe_load(code + ":")
             except Exception:
                 code_data = None
 
@@ -1069,7 +1069,7 @@ class AnsibleKernel(Kernel):
 
         data = dict()
 
-        code_data = yaml.load(code, Loader=yaml.FullLoader)
+        code_data = yaml.safe_load(code)
 
         logger.debug("code_data %s", code_data)
 
