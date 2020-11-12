@@ -185,7 +185,6 @@ class AnsibleKernel(Kernel):
 
         self.shell = self.shell_class.instance(parent=self,
                                                profile_dir=self.profile_dir,
-                                               user_ns=self.user_ns,
                                                kernel=self)
         self.shell.displayhook.session = self.session
         self.shell.displayhook.pub_socket = self.iopub_socket
